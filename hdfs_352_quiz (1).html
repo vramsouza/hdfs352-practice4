@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFS 352: Community Needs and Resources Quiz</title>
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --correct: #38a169;
+            --incorrect: #e53e3e;
+            --hover-btn: #ebf8ff;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px 20px;
+            flex: 1;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        button {
+            font-family: inherit;
+            font-size: 1.1rem;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: transparent;
+            color: var(--text-main);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        button:not([disabled]):hover {
+            background-color: var(--hover-btn);
+            border-color: var(--primary);
+        }
+
+        button.correct { background-color: #c6f6d5; border-color: var(--correct); color: #22543d; }
+        button.incorrect { background-color: #fed7d7; border-color: var(--incorrect); color: #742a2a; }
+        button:disabled { cursor: default; }
+
+        .feedback-area {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback-area.show { display: block; }
+        .feedback-title { font-weight: bold; font-size: 1.2rem; margin-bottom: 5px; }
+        .feedback-text { font-size: 1.05rem; }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            display: none;
+        }
+        
+        .action-btn:not([disabled]):hover {
+            background-color: #2c5282;
+        }
+
+        .action-btn.show { display: block; }
+
+        .score-area {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>HDFS 352: Community Needs and Resources</h1>
+    </header>
+
+    <div class="container" id="quiz-container">
+        <div id="question-block">
+            <div id="progress" style="font-size: 0.9rem; color: #718096; margin-bottom: 10px;"></div>
+            <div class="question-text" id="question-text"></div>
+            <div class="options-container" id="options-container"></div>
+            
+            <div class="feedback-area" id="feedback-area">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div class="feedback-text" id="feedback-text"></div>
+            </div>
+            
+            <button class="action-btn" id="next-btn">Next</button>
+        </div>
+
+        <div id="end-block" style="display: none;">
+            <div class="score-area" id="score-area"></div>
+            <button class="action-btn show" id="try-again-btn">Try again</button>
+        </div>
+    </div>
+
+    <footer>
+        Made by Dr. Vishwani (Deepa) Ram-Souza, LMFT, PhD with Gemini
+    </footer>
+
+    <script>
+        // EDIT YOUR QUESTIONS HERE
+        const quizData = [
+            {
+                question: "What is a 'community needs assessment'?",
+                choices: [
+                    "A process to determine the gaps between current conditions and desired conditions in a community.",
+                    "A financial audit of local government spending.",
+                    "A standardized test given to all community members.",
+                    "A plan to build new infrastructure based on political promises."
+                ],
+                correctAnswer: 0,
+                explanation: "A community needs assessment systematically identifies the gaps between a community's current state and its desired goals to prioritize action."
+            },
+            {
+                question: "Which of the following best defines 'human capital' as a community resource?",
+                choices: [
+                    "The physical buildings and machinery in a town.",
+                    "The financial reserves held by the local bank.",
+                    "The skills, knowledge, and experience possessed by individuals in a community.",
+                    "The natural environmental features like lakes and forests."
+                ],
+                correctAnswer: 2,
+                explanation: "Human capital refers to the collective skills, education, and health of individuals that can be utilized to benefit the community."
+            },
+            {
+                question: "In community development, what is an 'asset-based' approach?",
+                choices: [
+                    "Focusing primarily on the problems and deficiencies of a neighborhood.",
+                    "Identifying and mobilizing existing community strengths and resources.",
+                    "Selling public lands to private developers to generate revenue.",
+                    "Relying exclusively on external funding to fix local issues."
+                ],
+                correctAnswer: 1,
+                explanation: "Asset-based community development focuses on discovering and leveraging the existing strengths and capacities within a community rather than just its deficits."
+            },
+            {
+                question: "What is a common primary data collection method used in assessing community needs?",
+                choices: [
+                    "Reviewing census data from the previous decade.",
+                    "Reading published academic articles on poverty.",
+                    "Conducting focus groups with local residents.",
+                    "Analyzing historical weather patterns."
+                ],
+                correctAnswer: 2,
+                explanation: "Conducting focus groups collects primary data directly from the source, capturing the lived experiences and opinions of community members."
+            },
+            {
+                question: "Which term describes resources that are accessible to everyone in a community without direct cost?",
+                choices: [
+                    "Private goods",
+                    "Exclusive assets",
+                    "Public goods",
+                    "Capital reserves"
+                ],
+                correctAnswer: 2,
+                explanation: "Public goods, like public parks or libraries, are non-excludable and non-rivalrous resources provided for the benefit of all community members."
+            },
+            {
+                question: "What role do 'gatekeepers' play in community assessments?",
+                choices: [
+                    "They prevent researchers from entering the community entirely.",
+                    "They provide exclusive funding for community interventions.",
+                    "They are influential individuals who control access to the community or specific groups.",
+                    "They physically maintain the infrastructure of local community centers."
+                ],
+                correctAnswer: 2,
+                explanation: "Gatekeepers are trusted community members whose support is often necessary to gain entry and build trust within specific populations."
+            },
+            {
+                question: "Social capital refers to:",
+                choices: [
+                    "The monetary value of local social services.",
+                    "The networks of relationships among people who live and work in a particular society.",
+                    "The amount of social media followers a community organization has.",
+                    "The physical spaces where people gather socially."
+                ],
+                correctAnswer: 1,
+                explanation: "Social capital involves the networks, norms, and trust that facilitate coordination and cooperation for mutual benefit within a community."
+            },
+            {
+                question: "When prioritizing community needs, what is a crucial factor to consider?",
+                choices: [
+                    "The personal preferences of the lead researcher.",
+                    "The feasibility and potential impact of addressing the need.",
+                    "Choosing the most expensive problem to demonstrate commitment.",
+                    "Focusing only on issues that can be solved in less than a month."
+                ],
+                correctAnswer: 1,
+                explanation: "Prioritization requires weighing how severely a problem affects the community against the realistic capacity (feasibility) to address it."
+            },
+            {
+                question: "What is 'capacity building' in the context of community resources?",
+                choices: [
+                    "Constructing larger community centers to hold more people.",
+                    "Developing the skills, instincts, abilities, and resources that organizations and communities need to survive and adapt.",
+                    "Maximizing the holding capacity of local prisons.",
+                    "Increasing the local tax rate to the maximum legal limits."
+                ],
+                correctAnswer: 1,
+                explanation: "Capacity building empowers communities by strengthening their structural and human ability to address problems and sustain positive changes over time."
+            },
+            {
+                question: "Why is community participation essential when identifying needs and resources?",
+                choices: [
+                    "It guarantees unlimited funding from government sources.",
+                    "It allows professionals to avoid doing the heavy lifting themselves.",
+                    "It ensures the assessment reflects the actual realities and priorities of the residents.",
+                    "It eliminates all conflicts and disagreements during the planning phase."
+                ],
+                correctAnswer: 2,
+                explanation: "Active participation ensures interventions are relevant, culturally appropriate, and widely supported by the people they intend to serve."
+            }
+        ];
+
+        let shuffledQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let canAnswer = true;
+
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainerEl = document.getElementById('options-container');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const feedbackTitleEl = document.getElementById('feedback-title');
+        const feedbackTextEl = document.getElementById('feedback-text');
+        const nextBtnEl = document.getElementById('next-btn');
+        const progressEl = document.getElementById('progress');
+        const questionBlockEl = document.getElementById('question-block');
+        const endBlockEl = document.getElementById('end-block');
+        const scoreAreaEl = document.getElementById('score-area');
+        const tryAgainBtnEl = document.getElementById('try-again-btn');
+
+        function shuffleArray(array) {
+            const newArr = [...array];
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        }
+
+        function startQuiz() {
+            shuffledQuestions = shuffleArray(quizData);
+            currentQuestionIndex = 0;
+            score = 0;
+            questionBlockEl.style.display = 'block';
+            endBlockEl.style.display = 'none';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            canAnswer = true;
+            feedbackAreaEl.classList.remove('show');
+            nextBtnEl.classList.remove('show');
+            optionsContainerEl.innerHTML = '';
+            
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            progressEl.innerText = `Question ${currentQuestionIndex + 1} of ${shuffledQuestions.length}`;
+            questionTextEl.innerText = currentQuestion.question;
+
+            currentQuestion.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.innerText = `${index + 1}. ${choice}`;
+                button.onclick = () => selectAnswer(index);
+                optionsContainerEl.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (!canAnswer) return;
+            canAnswer = false;
+
+            const currentQuestion = shuffledQuestions[currentQuestionIndex];
+            const buttons = optionsContainerEl.querySelectorAll('button');
+
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === currentQuestion.correctAnswer) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selectedIndex === currentQuestion.correctAnswer) {
+                score++;
+                feedbackTitleEl.innerText = "Correct!";
+                feedbackTitleEl.style.color = "var(--correct)";
+            } else {
+                feedbackTitleEl.innerText = "Incorrect";
+                feedbackTitleEl.style.color = "var(--incorrect)";
+            }
+
+            feedbackTextEl.innerText = currentQuestion.explanation;
+            feedbackAreaEl.style.backgroundColor = selectedIndex === currentQuestion.correctAnswer ? "#f0fff4" : "#fff5f5";
+            feedbackAreaEl.classList.add('show');
+            nextBtnEl.classList.add('show');
+        }
+
+        nextBtnEl.onclick = () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        };
+
+        function showResults() {
+            questionBlockEl.style.display = 'none';
+            endBlockEl.style.display = 'block';
+            scoreAreaEl.innerText = `You scored ${score} out of ${shuffledQuestions.length}!`;
+            scoreAreaEl.style.display = 'block';
+        }
+
+        tryAgainBtnEl.onclick = startQuiz;
+
+        document.addEventListener('keydown', (e) => {
+            if (['1', '2', '3', '4'].includes(e.key) && canAnswer && questionBlockEl.style.display !== 'none') {
+                const index = parseInt(e.key) - 1;
+                selectAnswer(index);
+            }
+            if (e.key === 'Enter') {
+                if (nextBtnEl.classList.contains('show') && questionBlockEl.style.display !== 'none') {
+                    nextBtnEl.click();
+                } else if (endBlockEl.style.display === 'block') {
+                    tryAgainBtnEl.click();
+                }
+            }
+        });
+
+        // Initialize quiz on load
+        startQuiz();
+    </script>
+</body>
+</html>
